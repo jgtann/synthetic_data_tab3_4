@@ -4,14 +4,20 @@ import math
 from pathlib import Path
 
 # Set the title and favicon that appear in the Browser's tab bar.
+import streamlit as st
+from PIL import Image
+
+# Load the local image
+icon_image = Image.open("/workspaces/synthetic_data_tab3_4/data/dictogloss.png")
+
+# Set the page configuration with the image as the page icon
 st.set_page_config(
     page_title='Distribution dashboard',
-    page_icon='/workspaces/synthetic_data_tab3_4/data/dictogloss.png', # This is an emoji shortcode. Could be a URL too.
+    page_icon=icon_image  # Pass the PIL image object here
 )
 
-# -----------------------------------------------------------------------------
-# Declare some useful functions.
 
+# use cache data to prevent data load in every refresh
 @st.cache_data
 def get_gdp_data():
     """Grab GDP data from a CSV file.
