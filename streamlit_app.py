@@ -1,19 +1,28 @@
 import streamlit as st
 import pandas as pd
+from pathlib import Path
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-# Load data
-data = pd.read_csv('/workspaces/synthetic_data_tab3_4/data/synthetic_data.csv')
+# Load and cache the data
+@st.cache_data
+def load_data():
+    """Load the synthetic data."""
+    DATA_FILENAME = Path(__file__).parent / '/workspaces/synthetic_data_tab3_4/data/synthetic_data.csv'  # Adjust the path if needed
+    synthetic_df = pd.read_csv(DATA_FILENAME)
+    return synthetic_df
+
+# Load the data
+synthetic_df = load_data()
 
 # Streamlit App
 st.title("Data Visualization and Analysis")
-st.subheader("Caveat: the visuals are based on synthetic data and for exploratory purpose. Not meant for circulation or as a basis for conclusion.")
+st.subheader("Caveat: the visuals are based on synthetic data and for exploratory purposes only. Not meant for circulation or as a basis for conclusion.")
 
 # Filter options based on unique values in the DataFrame
-measure_options = data['Measure'].unique()
-group_options = data['Group'].unique()
-day_options = data['Day'].unique()
+measure_options = synthetic_df['Measure'].unique()
+group_options = synthetic_df['Group'].unique()
+day_options = synthetic_df['Day'].unique()
 
 # Sidebar filters
 selected_measure = st.selectbox("Select Measure", measure_options)
@@ -21,10 +30,10 @@ selected_group = st.multiselect("Select Group(s)", group_options, default=group_
 selected_day = st.multiselect("Select Day(s)", day_options, default=day_options)
 
 # Apply the filters to the DataFrame
-filtered_data = data[
-    (data['Measure'] == selected_measure) &
-    (data['Group'].isin(selected_group)) &
-    (data['Day'].isin(selected_day))
+filtered_data = synthetic_df[
+    (synthetic_df['Measure'] == selected_measure) &
+    (synthetic_df['Group'].isin(selected_group)) &
+    (synthetic_df['Day'].isin(selected_day))
 ]
 
 # Check if there's data to display after filtering
