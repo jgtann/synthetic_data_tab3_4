@@ -4,6 +4,10 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+DATA_FILENAME = Path(__file__).parent / 'data/synthetic_data.csv'
+st.write(f"Looking for file at: {DATA_FILENAME}")
+st.write(f"File exists: {DATA_FILENAME.exists()}")
+
 # Load and cache the data
 @st.cache_data
 def load_data():
@@ -12,8 +16,13 @@ def load_data():
     synthetic_df = pd.read_csv(DATA_FILENAME)
     return synthetic_df
 
-# Load the data
-synthetic_df = load_data()
+    # Load data if the file exists
+    if DATA_FILENAME.exists():
+        synthetic_df = pd.read_csv(DATA_FILENAME)
+        return synthetic_df
+    else:
+        st.error("The data file was not found. Please check the path and ensure the file exists.")
+        return None
 
 # Streamlit App
 st.title("Data Visualization and Analysis")
